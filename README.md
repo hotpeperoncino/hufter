@@ -2,6 +2,50 @@
 
 Hufter is a tool for gathering, querying, and backtesting stock quote data. Utilizing the Yahoo Finance API, it  has an easy-to-use, declarative style with RESTful routes and flexible options. There are four main utilities in Hufter: real-time quotes, daily historical data, algorithm backtesting, and persistent quote data gathering through MongoDB.
 
+This fork changes the data format to yahoo's format.
+And this fork changes the REST command to original one.
+So most previous original description becomes obsolete.
+
+### How to run
+
+Required dependencies: Node.js, MongoDB, npm, nodemon
+
+First time:
+  Navigate to root directory of hufter and run `npm install`
+
+To run:
+
+1. Make sure Mongo server is running (if not, run command `mongod`)
+2. Spin up API by running `nodemon` from project root directory (will run from port 3000). Process also logs useful console output.
+  or node ./bin/www on project root directory.
+2'. Run example script `run.js` to make requests to API every 30 seconds and save to MongoDB
+
+
+### Command list
+
+   * /backtest  http://localhost:3000/backtest
+   * /quote?symbol=SPY  http://localhost:3000/quote?symbol=SPY
+      Fetch snapshot from yahoo on the fly   
+   * /db/regist/[SYM]  http://localhost:3000/db/regist/SPY
+      To add track ticker
+   * /db/save/[SYM]  http://localhost:3000/db/save/SPY
+      Fetch snapshot and save 
+   * /db/saveall  http://localhost:3000/db/saveall
+      To save datas for all track tickers.
+   * /db/tickers  http://localhost:3000/db/tickers
+      To list track tickers
+   * /db/tickers/[SYM]  http://localhost:3000/db/tickers/SPY
+      check ticker is tracked
+   * /historicaldata  http://localhost:3000/historicaldata?symbols=AAPL%2CMSFT&startDate=2015-01-01
+      Fetch historical data from yahoo on the fly
+   * /db/save/historical http://localhost:3000/db/save/historical?symbols=AAPL%2CMSFT&startDate=2015-01-01
+      Fetch historical data from yahoo and save them
+   * /db/load/historical http://localhost:3000/db/load/historical?symbols=AAPL%2CMSFT
+      Get the saved data
+
+
+### The following is original one.
+
 ### Backtesting Engine (`/backtest`) 
 _Very much in progress_
 
