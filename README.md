@@ -44,7 +44,7 @@ To run:
       Get the saved data
 
 
-### The following is original one.
+### The following comes from original.
 
 ### Backtesting Engine (`/backtest`) 
 _Very much in progress_
