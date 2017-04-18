@@ -24,8 +24,9 @@ To run:
 ### Command list
 
    * /backtest  http://localhost:3000/backtest
-   * /quote?symbol=SPY  http://localhost:3000/quote?symbol=SPY
+   * /quotes?symbol=[SYM]  http://localhost:3000/quotes?symbol=SPY
       Fetch snapshot from yahoo on the fly   
+   * /historicaldata?symbols=[SYM]&startDate=[Date]  http://localhost:3000/historicaldata?symbols=AAPL%2CMSFT&startDate=2015-01-01
    * /db/regist/[SYM]  http://localhost:3000/db/regist/SPY
       To add track ticker
    * /db/save/[SYM]  http://localhost:3000/db/save/SPY
@@ -36,12 +37,12 @@ To run:
       To list track tickers
    * /db/tickers/[SYM]  http://localhost:3000/db/tickers/SPY
       check ticker is tracked
-   * /historicaldata  http://localhost:3000/historicaldata?symbols=AAPL%2CMSFT&startDate=2015-01-01
       Fetch historical data from yahoo on the fly
    * /db/save/historical http://localhost:3000/db/save/historical?symbols=AAPL%2CMSFT&startDate=2015-01-01
       Fetch historical data from yahoo and save them
    * /db/load/historical http://localhost:3000/db/load/historical?symbols=AAPL%2CMSFT
       Get the saved data
+   * /db/disconnect http://localhost:3000/db/disconnect
 
 
 ### The following comes from original.
