@@ -1,0 +1,17 @@
+<html><body>
+<ul>
+<li>/backtest <a href="/backtest">example</a>
+<li>/quotes?symbol=[SYM] <a href="/quotes?symbols=SPY">example</a> Fetch snapshot from yahoo on the fly
+<li>/historicaldata?symbols=[SYM]&startDate=[Date] <a href="/historicaldata?symbols=AAPL%2CMSFT&startDate=2015-01-01">example</a>
+<li>/db/regist/[SYM] <a href="/db/regist/SPY">example</a> To add tracking ticker
+<li>/db/save/[SYM] <a href="/db/save/SPY">example</a> Fetch snapshot and save
+<li>/db/save <a href="/db/save?symbols=AAPL%2CMSFT">example</a> To save symbols data.
+<li>/db/saveall <a href="/db/saveall">example</a> To save data of all tracking tickers.
+<li>/db/load <a href="/db/load?symbols=AAPL%2CMSFT">example</a> To load symbols data.  
+<li>/db/tickers <a href="/db/tickers">example</a> To list tracking tickers
+<li>/db/tickers/[SYM] <a href="/db/tickers/SPY">example</a> check ticker is tracked Fetch historical data from yahoo on the fly
+<li>/db/savehistoricaldata <a href="/db/savehistoricaldata?symbols=AAPL%2CMSFT&startDate=2015-01-01">example</a> Fetch historical data from yahoo and save them
+<li>/db/loadhistoricaldata <a href="/db/loadhistoricaldata?symbols=AAPL%2CMSFT">example</a> Get the saved data
+<li>/db/disconnect <a href="/db/disconnect">example</a>
+</ul>
+</body></html>

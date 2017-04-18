@@ -1,25 +1,31 @@
 var mongoose = require('mongoose');
 var moment = require('moment');
 var async = require('async');
+mongoose.Promise = global.Promise;
+//assert.equal(query.exec().constructor, global.Promise);
 
 var histSchema = mongoose.Schema({
   symbol: String,
-  data: Number,
+  data: String,
   timestamp: Number
 });
 
 var Hist = mongoose.model('Hist', histSchema);
 
 var save = function(stocks){
-    return new Promise(function (resolve, reject){
-	async.each(stocks, function(stock, nextcb){
-	    console.log(stock);
+  var keys = [];
+  for (n in stocks) keys.push(n);
+  
+  return new Promise(function (resolve, reject) {
+//	    console.log(stocks);    
+    async.each(keys, function(key, nextcb){
+      var stock = stocks[key];
             var currentQuote = new Hist({
-		symbol: stock["symbol"],
-		data: stock,
-		timestamp: new Date().getTime()
+	      symbol: key,
+	      data: JSON.stringify(stock),
+	      timestamp: new Date().getTime()
             });
-	    currentQuote.save((err, data) => { console.log("Quote for", stock["symbol"], "saved at", moment().format('lll')); nextcb(null); })
+	    currentQuote.save((err, data) => { console.log("Quote for", key, "saved at", moment().format('lll')); nextcb(null); })
 	},
 		   function(err) {
 		       if (err)
@@ -32,15 +38,28 @@ var save = function(stocks){
 
 var load = function(stocks){
     return new Promise(function (resolve, reject){
-	var result = [];
-	async.each(stocks, function(stock, nextcb){	
-	    Hist.findOne({name: stock}, function(err, item) {
-		result << item;
-	    });
-	},
-		   function(err) {
-		       resolve(result);
-		   });
+      var result = {};
+      async.each(stocks, function(stock, nextcb){
+	console.log(stock);
+	Hist.findOne({symbol: stock}, function(err, item) {
+	  console.log(err);	  
+	  if (err) {
+	    nextcb(err);
+	    return;
+	  }
+	  if (item == null) {
+	    nextcb(null);
+	    return;
+	  }
+	  result[item.symbol] = JSON.parse(item.data);
+	  nextcb(null);
+	});
+      },
+		 function(err) {
+		   console.log(err);
+		   if (err) reject(err);
+		   else resolve(result);
+		 });
     });
 }
 

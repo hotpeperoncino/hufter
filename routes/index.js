@@ -1,9 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var fs = require('fs')
 
-router.get('/', function(req, res, next) {
-    var text = '<html><body><a href="/db/regist/SPY">regist SPY</a><br></body></html>';
-  res.send(text);
-});
 
 module.exports = router;

@@ -2,9 +2,9 @@
 
 Hufter is a tool for gathering, querying, and backtesting stock quote data. Utilizing the Yahoo Finance API, it  has an easy-to-use, declarative style with RESTful routes and flexible options. There are four main utilities in Hufter: real-time quotes, daily historical data, algorithm backtesting, and persistent quote data gathering through MongoDB.
 
-This fork changes the data format to yahoo's format.
-And this fork changes the REST command to original one.
-So most previous original description becomes obsolete.
+This fork changes the data format to yahoo's format. Because this does not use original fetching program from yahoo but use node-yahoo-finance library.
+And this fork changes the REST commands. The commands list shows.
+So the previous descriptions becomes obsolete.
 
 ### How to run
 
@@ -16,14 +16,26 @@ First time:
 To run:
 
 1. Make sure Mongo server is running (if not, run command `mongod`)
+   mongodb database name is mongodb://test:test@localhost/hufter
+
+   Userid: test, password test is used. To add admin, the following will help
+```
+   $ mongo
+   > use hufter
+   > db.addUser('test','test')
+```
+
 2. Spin up API by running `nodemon` from project root directory (will run from port 3000). Process also logs useful console output.
   or node ./bin/www on project root directory.
 2'. Run example script `run.js` to make requests to API every 30 seconds and save to MongoDB
 
 
-### Command list
+### Commands list
 
+   open http://localhost:3000/
+   
    * /backtest  http://localhost:3000/backtest
+     not work
    * /quotes?symbol=[SYM]  http://localhost:3000/quotes?symbol=SPY
       Fetch snapshot from yahoo on the fly   
    * /historicaldata?symbols=[SYM]&startDate=[Date]  http://localhost:3000/historicaldata?symbols=AAPL%2CMSFT&startDate=2015-01-01
@@ -31,6 +43,10 @@ To run:
       To add track ticker
    * /db/save/[SYM]  http://localhost:3000/db/save/SPY
       Fetch snapshot and save 
+   * /db/save  http://localhost:3000/db/save?symbols=SPY
+      Fetch snapshot and save 
+   * /db/load  http://localhost:3000/db/save?symbols=SPY
+      get saved data
    * /db/saveall  http://localhost:3000/db/saveall
       To save datas for all track tickers.
    * /db/tickers  http://localhost:3000/db/tickers
@@ -38,14 +54,17 @@ To run:
    * /db/tickers/[SYM]  http://localhost:3000/db/tickers/SPY
       check ticker is tracked
       Fetch historical data from yahoo on the fly
-   * /db/save/historical http://localhost:3000/db/save/historical?symbols=AAPL%2CMSFT&startDate=2015-01-01
+   * /db/savehistoricaldata http://localhost:3000/db/savehistoricaldata?symbols=AAPL%2CMSFT&startDate=2015-01-01
       Fetch historical data from yahoo and save them
-   * /db/load/historical http://localhost:3000/db/load/historical?symbols=AAPL%2CMSFT
+   * /db/loadhistoricaldata http://localhost:3000/db/load/historicaldata?symbols=AAPL%2CMSFT
       Get the saved data
    * /db/disconnect http://localhost:3000/db/disconnect
 
+Most options and metrics are not supported.
 
-### The following comes from original.
+
+
+### The following comes from original. It becomes obsolete.
 
 ### Backtesting Engine (`/backtest`) 
 _Very much in progress_

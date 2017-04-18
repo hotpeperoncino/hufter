@@ -27,7 +27,7 @@ var FIELDS = _.flatten([
 
 
 var getStockData = function (symbols, metrics){
-    console.log(symbols, metrics);
+  console.log("getstockdata",symbols, metrics);
     return nyf.snapshot({fields:FIELDS, symbols:symbols});
 }
 

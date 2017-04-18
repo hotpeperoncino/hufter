@@ -24,7 +24,10 @@
     "needle": "^0.11.0",
     "nodemon": "^1.11.0",
     "ramda": "^0.18.0",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.0",
     "serve-favicon": "~2.3.0",
+    "string": "^3.3.3",
     "tape": "^4.2.2",
     "uniq": "^1.0.1",
     "xmlhttprequest": "^1.8.0"
