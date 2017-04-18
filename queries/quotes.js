@@ -1,77 +1,52 @@
+var nyf = require('./node-yahoo-finance')
+var moment = require('moment');
 var _ = require('ramda');
-var xhrPromise = require('../utils/needle-promisify');
+
+var FIELDS = _.flatten([
+  // Pricing
+  ['a', 'b', 'b2', 'b3', 'p', 'o'],
+  // Dividends
+  ['y', 'd', 'r1', 'q'],
+  // Date
+  ['c1', 'c', 'c6', 'k2', 'p2', 'd1', 'd2', 't1'],
+  // Averages
+  ['c8', 'c3', 'g', 'h', 'k1', 'l', 'l1', 't8', 'm5', 'm6', 'm7', 'm8', 'm3', 'm4'],
+  // Misc
+  ['w1', 'w4', 'p1', 'm', 'm2', 'g1', 'g3', 'g4', 'g5', 'g6'],
+  // 52 Week Pricing
+  ['k', 'j', 'j5', 'k4', 'j6', 'k5', 'w'],
+  // System Info
+  ['i', 'j1', 'j3', 'f6', 'n', 'n4', 's1', 'x', 'j2'],
+  // Volume
+  ['v', 'a5', 'b6', 'k3', 'a2'],
+  // Ratio
+  ['e', 'e7', 'e8', 'e9', 'b4', 'j4', 'p5', 'p6', 'r', 'r2', 'r5', 'r6', 'r7', 's7'],
+  // Misc
+  ['t7', 't6', 'i5', 'l2', 'l3', 'v1', 'v7', 's6', 'e1']
+]);
+
 
 var getStockData = function (symbols, metrics){
-  var url = buildQuery(parseSymbols(symbols), parseMetrics(metrics));
-
-  return xhrPromise.get(url)
-    .then(function(res){
-      var response = {
-        results: [].concat(res.body["query"]["results"]["quote"]),
-        ResolutionTime: res.body["query"]["diagnostics"]["user-time"]
-      }
-
-      response = _.mergeAll([
-        response,
-        checkInvalidTickers(response),
-        checkInvalidMetrics(metrics, response)
-      ]);
-
-      if (_.isEmpty(response["results"])) { throw new Error(response.tickerError); }
-      else { return response; }
-    });
+    console.log(symbols, metrics);
+    return nyf.snapshot({fields:FIELDS, symbols:symbols});
 }
 
-
-function parseSymbols(symbols){
-  if (!symbols) { return 'SPY'; }
-  else if (_.type(symbols) === "Array") { return symbols.join('","'); }
-}
-
-function parseMetrics(metrics){
-  if (!metrics) { return '*'; }
-  else if (_.type(metrics) === "String") { return metrics + ",Symbol"; }
-  else if (_.type(metrics) === "Array") { return metrics.concat("Symbol").join(','); }
-}
-
-function buildQuery(symbols, metrics){
-  var rootPath = 'https://query.yahooapis.com/v1/public/yql?q=';
-  var query = `select ${metrics} from yahoo.finance.quotes where symbol in ("${symbols}")`;
-  var extraParams = '&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys';
-  return rootPath + encodeURIComponent(query) + extraParams;
-}
-
-function noResult(stockResult){
-  var elimSymbol = dataSet => _.pipe(Object.keys, _.reject(_.equals('Symbol')), _.pick(_.__, dataSet))
-  var getVals = obj => _.map((key) => obj[key], Object.keys(obj));
-  var checkAllNull = _.all(_.equals(null));
-  return _.pipe(elimSymbol(stockResult), getVals, checkAllNull)(stockResult);
-}
-
-function checkInvalidTickers(stockData){
-  var parsedResult = {};
-  var getInvalidSymbols = _.pipe(_.prop('results'), _.filter(noResult), _.pluck('Symbol'));
-  var invalidSymbols = getInvalidSymbols(stockData);
-
-  if (_.isEmpty(invalidSymbols)){
-    parsedResult["results"] = stockData["results"];
-  } else {
-    var isInvalid = (stock) => _.contains(stock["Symbol"], invalidSymbols);
-    parsedResult["results"] = _.reject(isInvalid, stockData["results"]);
-    parsedResult.tickerError = `No quote information found for ticker(s) ${invalidSymbols.join(", ")}`;
+function parseStartDate(startDate){
+  if (!startDate) { return moment().subtract(1, 'years').format("YYYY-MM-DD") }
+  else {
+    var startDate = moment(startDate);
+    if (startDate.isValid()) { return startDate.format("YYYY-MM-DD"); }
+    else { return `Start date ${startDate} is invalid. Please enter date in parseable format.`}
   }
-  return parsedResult;
 }
 
-function checkInvalidMetrics(metrics, stockData){
-  if (!metrics) return {};
-  if (_.type(metrics) !== "Array") { metrics = [metrics] }
-
-  var validMetrics = Object.keys(stockData["results"][0]);
-  var isValid = _.contains(_.__, validMetrics);
-  var invalidMetrics = _.reject(isValid, metrics);
-  var metricsError = `No such metrics ${invalidMetrics.join(", ")}. Please refer to documentation for possible metrics.`
-  return _.isEmpty(invalidMetrics) ? {} : { metricsError: metricsError };
+function parseEndDate(endDate){
+  if (!endDate) { return moment().format("YYYY-MM-DD") }
+  else {
+    var endDate = moment(endDate);
+    if (endDate.isValid()) { return endDate.format("YYYY-MM-DD"); }
+    else { return `End date ${endDate} is invalid. Please enter date in parseable format.`}
+  }
 }
 
 getStockDatawithOptions = _.curry(getStockData);

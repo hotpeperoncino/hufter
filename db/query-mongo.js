@@ -20,4 +20,4 @@ function getTickers(){
     .then(uniq);
 }
 
-module.exports = getTickers;
+module.exports.getTickers = getTickers;
